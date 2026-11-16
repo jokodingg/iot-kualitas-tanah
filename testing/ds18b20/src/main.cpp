@@ -3,7 +3,18 @@
 #include <Arduino.h>
 #include <DallasTemperature.h>
 #include <OneWire.h>
-#include "config.h"
+
+// Pins and settings, copied from include/config.h in the main project.
+const int PIN_MOISTURE = 0;
+const int PIN_TDS = 1;
+const int PIN_DS18B20 = 3;
+const int PIN_RELAY = 4;
+const int PIN_SDA = 8;
+const int PIN_SCL = 9;
+const uint8_t LCD_ADDR = 0x27;
+const int ADC_SAMPLES = 10;
+const int ADC_DRY = 3000;
+const int ADC_WET = 1300;
 
 OneWire oneWire(PIN_DS18B20);
 DallasTemperature ds(&oneWire);

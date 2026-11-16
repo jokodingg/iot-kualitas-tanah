@@ -11,13 +11,19 @@ Reading lastReading = {0, 0, false, 0, 0};
 
 static uint32_t lastReadMs = 0;
 
+// 5V active-LOW relay module driven open-drain: ON = OUTPUT LOW, OFF = INPUT
+// (released, the module pulls IN up to 5V). A 3.3V HIGH may leave a 5V module half on.
 static void setRelay(bool on) {
-  digitalWrite(PIN_RELAY, (on != RELAY_ACTIVE_LOW) ? HIGH : LOW);
+  if (on) {
+    pinMode(PIN_RELAY, OUTPUT);
+    digitalWrite(PIN_RELAY, LOW);
+  } else {
+    pinMode(PIN_RELAY, INPUT);
+  }
 }
 
 void setup() {
-  setRelay(false);  // set the OFF level before the pin becomes an output, so the relay does not click at boot
-  pinMode(PIN_RELAY, OUTPUT);
+  setRelay(false);
   Serial.begin(115200);
   sensorsBegin();
   displayBegin();

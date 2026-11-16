@@ -3,7 +3,18 @@
 #include <Arduino.h>
 #include <LiquidCrystal_I2C.h>
 #include <Wire.h>
-#include "config.h"
+
+// Pins and settings, copied from include/config.h in the main project.
+const int PIN_MOISTURE = 0;
+const int PIN_TDS = 1;
+const int PIN_DS18B20 = 3;
+const int PIN_RELAY = 4;
+const int PIN_SDA = 8;
+const int PIN_SCL = 9;
+const uint8_t LCD_ADDR = 0x27;
+const int ADC_SAMPLES = 10;
+const int ADC_DRY = 3000;
+const int ADC_WET = 1300;
 
 uint8_t addr = 0;
 LiquidCrystal_I2C* lcd = nullptr;
@@ -24,7 +35,7 @@ void setup() {
     Serial.println("  TIDAK ADA perangkat - cek kabel SDA/SCL/VCC/GND");
     return;
   }
-  if (addr != LCD_ADDR) Serial.printf("  ganti LCD_ADDR di config.h jadi 0x%02X\n", addr);
+  if (addr != LCD_ADDR) Serial.printf("  ganti LCD_ADDR di include/config.h jadi 0x%02X\n", addr);
   lcd = new LiquidCrystal_I2C(addr, 16, 2);
   lcd->init();
   lcd->backlight();
