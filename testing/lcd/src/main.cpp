@@ -23,16 +23,25 @@ void setup() {
   Serial.begin(115200);
   delay(1500);
   Wire.begin(PIN_SDA, PIN_SCL);
+  Wire.setClock(50000);  // slower clock is more tolerant of long jumper wires
   Serial.println("TEST LCD - SDA GPIO8, SCL GPIO9. Scan I2C:");
-  for (uint8_t a = 1; a < 127; a++) {
+  int found = 0;
+  for (uint8_t a = 0x08; a <= 0x77; a++) {  // 0x00-0x07 and 0x78-0x7F are reserved
     Wire.beginTransmission(a);
     if (Wire.endTransmission() == 0) {
       Serial.printf("  ditemukan perangkat di 0x%02X\n", a);
       if (!addr) addr = a;
+      found++;
     }
   }
-  if (!addr) {
+  if (found == 0) {
     Serial.println("  TIDAK ADA perangkat - cek kabel SDA/SCL/VCC/GND");
+    return;
+  }
+  if (found > 3) {
+    Serial.println("  JALUR I2C BERMASALAH: terlalu banyak alamat, LCD hanya punya satu.");
+    Serial.println("  Cek pull-up 4,7k SDA->3V3 dan SCL->3V3, GND bersama, dan SDA/SCL tidak tertukar.");
+    addr = 0;
     return;
   }
   if (addr != LCD_ADDR) Serial.printf("  ganti LCD_ADDR di include/config.h jadi 0x%02X\n", addr);
