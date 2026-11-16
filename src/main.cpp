@@ -16,8 +16,8 @@ static void setRelay(bool on) {
 }
 
 void setup() {
+  setRelay(false);  // set the OFF level before the pin becomes an output, so the relay does not click at boot
   pinMode(PIN_RELAY, OUTPUT);
-  setRelay(false);
   Serial.begin(115200);
   sensorsBegin();
   displayBegin();

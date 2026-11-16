@@ -10,7 +10,7 @@ constexpr int PIN_SDA = 8;
 constexpr int PIN_SCL = 9;
 
 // Set true if the relay module switches ON when its input is LOW.
-constexpr bool RELAY_ACTIVE_LOW = false;
+constexpr bool RELAY_ACTIVE_LOW = true;  // most cheap opto relay modules; check yours
 
 constexpr uint8_t LCD_ADDR = 0x27;  // try 0x3F if the screen stays blank
 

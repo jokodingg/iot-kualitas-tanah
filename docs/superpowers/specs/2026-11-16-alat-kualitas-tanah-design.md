@@ -41,3 +41,7 @@ Penempatan probe: probe kelembapan, probe TDS, dan DS18B20 ditancapkan berdekata
 ## Diserahkan ke pembuat
 - Pembagian file kode, pemilihan library spesifik, dan tampilan halaman web.
 - Nilai kalibrasi aktual diukur saat perakitan.
+
+## Catatan wiring (dari review)
+- LCD I2C: pull-up di backpack PCF8574 menarik SDA/SCL ke 5V, padahal GPIO8/9 tidak tahan 5V. Lepas resistor pull-up di backpack lalu pasang pull-up 4,7 kΩ ke 3V3, atau pakai level shifter.
+- Relay: input relay 5V tidak selalu bisa digerakkan GPIO 3,3V. Pakai modul yang bisa dipicu 3,3V, atau pakai driver transistor. Cek polaritas `RELAY_ACTIVE_LOW`: pompa harus mati saat dinyalakan dan saat LCD menampilkan `P:OFF`.
