@@ -22,6 +22,11 @@ void displayBegin() {
   printLine(1, "Memulai...");
 }
 
+void displayRecover() {
+  lcd.init();
+  lcd.backlight();
+}
+
 void displayShow(const Reading& r, bool pumpOn) {
   char line[24];
   if (r.tempValid) snprintf(line, sizeof(line), "M:%d%% T:%.1fC", (int)(r.moisture + 0.5f), r.tempC);

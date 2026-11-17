@@ -9,6 +9,8 @@
 
 static OneWire oneWire(PIN_DS18B20);
 static DallasTemperature ds(&oneWire);
+static float lastGoodTemp = 0;
+static int badTempReads = TEMP_HOLD_READS;  // no good value yet
 
 static int averageRaw(int pin) {
   long sum = 0;
@@ -34,8 +36,17 @@ Reading sensorsRead() {
   Reading r;
   float t = ds.getTempCByIndex(0);  // result of the previous request
   ds.requestTemperatures();
-  r.tempValid = t != DEVICE_DISCONNECTED_C && t > -20.0f && t < 80.0f;
-  r.tempC = t;
+  bool ok = t != DEVICE_DISCONNECTED_C && t > -20.0f && t < 80.0f;
+  if (ok) {
+    lastGoodTemp = t;
+    badTempReads = 0;
+  } else if (badTempReads < TEMP_HOLD_READS) {
+    badTempReads++;
+  }
+  // A single failed read (often a pump spike) keeps the last good value.
+  r.tempValid = badTempReads < TEMP_HOLD_READS;
+  r.tempC = r.tempValid ? lastGoodTemp : t;
+  t = r.tempC;
 
   r.moistureRaw = averageRaw(PIN_MOISTURE);
   r.moisture = moisturePercent(r.moistureRaw, ADC_DRY, ADC_WET);

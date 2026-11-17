@@ -14,11 +14,14 @@ constexpr uint8_t LCD_ADDR = 0x27;  // try 0x3F if the screen stays blank
 // Watering rules
 constexpr float ON_BELOW = 35.0f;    // % moisture
 constexpr float OFF_ABOVE = 55.0f;   // % moisture
-constexpr uint32_t MAX_ON_MS = 10000;
-constexpr uint32_t LOCKOUT_MS = 60000;
+constexpr uint32_t MAX_ON_MS = 5000;    // one watering pulse
+constexpr uint32_t LOCKOUT_MS = 10000;  // pause between pulses, lets water soak in
 
 constexpr uint32_t READ_INTERVAL_MS = 2000;
 constexpr int ADC_SAMPLES = 10;
+
+// Keep the last good temperature for this many failed reads (e.g. -127 during a pump spike).
+constexpr int TEMP_HOLD_READS = 5;
 
 // Moisture calibration: raw ADC with the probe in air (dry) and in water (wet).
 // Placeholder values; measure on your own sensor.

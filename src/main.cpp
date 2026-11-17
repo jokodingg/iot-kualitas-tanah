@@ -10,6 +10,7 @@ PumpController pump(ON_BELOW, OFF_ABOVE, MAX_ON_MS, LOCKOUT_MS);
 Reading lastReading = {0, 0, false, 0, 0};
 
 static uint32_t lastReadMs = 0;
+static bool prevPumpOn = false;
 
 // 5V active-LOW relay module driven open-drain: ON = OUTPUT LOW, OFF = INPUT
 // (released, the module pulls IN up to 5V). A 3.3V HIGH may leave a 5V module half on.
@@ -39,6 +40,11 @@ void loop() {
   lastReading = sensorsRead();
   bool on = pump.update(now, lastReading.moisture);
   setRelay(on);
+  if (on != prevPumpOn) {
+    delay(150);          // let the supply settle after the pump switches
+    displayRecover();    // the switching spike can garble the LCD
+    prevPumpOn = on;
+  }
   displayShow(lastReading, on);
 
   Serial.printf("raw=%d moisture=%.1f%% temp=%.1fC(%s) ec=%.0fuS pump=%s mode=%s\n",
