@@ -42,7 +42,7 @@ let s={};
 function show(d){s=d;
 m.textContent=d.moisture.toFixed(0)+' %';
 t.textContent=d.tempValid?d.tempC.toFixed(1)+' °C':'--';
-ec.textContent=d.ecUs.toFixed(0)+' µS/cm';
+ec.textContent=d.ecUs<0?'--':d.ecUs.toFixed(0)+' µS/cm';
 p.textContent=d.pumpOn?'ON':'OFF';
 mode.textContent='Mode: '+(d.mode=='auto'?'AUTO':'MANUAL');
 const man=d.mode=='manual';on.disabled=!man;off.disabled=!man;}

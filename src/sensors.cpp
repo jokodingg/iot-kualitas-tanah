@@ -50,6 +50,7 @@ Reading sensorsRead() {
 
   r.moistureRaw = averageRaw(PIN_MOISTURE);
   r.moisture = moisturePercent(r.moistureRaw, ADC_DRY, ADC_WET);
-  r.ecUs = ecFromVoltage(averageVolts(PIN_TDS), r.tempValid ? t : 25.0f);
+  // A floating, unwired GPIO1 reads random voltage, so report -1 (no EC) instead.
+  r.ecUs = HAS_TDS ? ecFromVoltage(averageVolts(PIN_TDS), r.tempValid ? t : 25.0f) : -1.0f;
   return r;
 }
