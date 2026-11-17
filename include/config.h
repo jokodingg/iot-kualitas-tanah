@@ -22,8 +22,8 @@ constexpr int ADC_SAMPLES = 10;
 
 // Moisture calibration: raw ADC with the probe in air (dry) and in water (wet).
 // Placeholder values; measure on your own sensor.
-constexpr int ADC_DRY = 3000;
-constexpr int ADC_WET = 1300;
+constexpr int ADC_DRY = 4095;
+constexpr int ADC_WET = 3200;
 
 constexpr const char* AP_SSID = "KualitasTanah";
 constexpr const char* AP_PASS = "tanah123";
