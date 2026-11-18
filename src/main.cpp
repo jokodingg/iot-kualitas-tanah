@@ -26,6 +26,7 @@ static void setRelay(bool on) {
 void setup() {
   setRelay(false);
   Serial.begin(115200);
+  delay(1500);  // give the USB Serial monitor time to connect, so boot messages are visible
   sensorsBegin();
   displayBegin();
   webBegin();

@@ -67,7 +67,13 @@ static void sendState(AsyncWebServerRequest* req) {
 }
 
 void webBegin() {
-  WiFi.softAP(AP_SSID, AP_PASS);
+  WiFi.mode(WIFI_AP);
+  bool apOk = WiFi.softAP(AP_SSID, AP_PASS);
+  // The ESP32-C3 Super Mini's antenna design often fails at full TX power;
+  // a lower power makes the access point show up reliably.
+  WiFi.setTxPower(WIFI_POWER_8_5dBm);
+  Serial.printf("WiFi AP %s: SSID=%s IP=%s\n", apOk ? "aktif" : "GAGAL", AP_SSID,
+                WiFi.softAPIP().toString().c_str());
 
   server.on("/", HTTP_GET, [](AsyncWebServerRequest* req) {
     req->send(200, "text/html", PAGE);
