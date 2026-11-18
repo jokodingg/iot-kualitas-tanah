@@ -221,11 +221,11 @@ PlatformIO adalah alat untuk mengompilasi program dan mengunggahnya ke board. Ca
 
 ### Langkah 3: Unduh proyek ini
 
-**Cara mudah:** buka https://github.com/jokodinggg/iot-kualitas-tanah, klik tombol hijau **Code**, pilih **Download ZIP**, lalu ekstrak.
+**Cara mudah:** buka https://github.com/jokodingg/iot-kualitas-tanah, klik tombol hijau **Code**, pilih **Download ZIP**, lalu ekstrak.
 
 **Dengan git:**
 ```
-git clone https://github.com/jokodinggg/iot-kualitas-tanah.git
+git clone https://github.com/jokodingg/iot-kualitas-tanah.git
 ```
 
 ### Langkah 4: Buka proyek
