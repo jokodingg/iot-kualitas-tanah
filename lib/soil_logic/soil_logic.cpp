@@ -23,6 +23,14 @@ void PumpController::turnOff(uint32_t nowMs) {
 }
 
 bool PumpController::update(uint32_t nowMs, float moisture) {
+  if (pulsing_) {
+    if (nowMs - onSince_ >= pulseMs_) {
+      on_ = false;  // no auto pause after a pulse
+      pulsing_ = false;
+    }
+    return on_;
+  }
+
   if (on_ && nowMs - onSince_ >= maxOnMs_) {
     turnOff(nowMs);
     manualRequest_ = false;  // a manual run must be requested again
@@ -60,4 +68,19 @@ uint32_t PumpController::pauseRemainingMs(uint32_t nowMs) const {
   if (mode_ != PumpMode::Auto || on_ || !hasRun_) return 0;
   uint32_t elapsed = nowMs - offSince_;
   return elapsed < lockoutMs_ ? lockoutMs_ - elapsed : 0;
+}
+
+void PumpController::pulse(uint32_t nowMs, uint32_t durationMs) {
+  pulsing_ = true;
+  pulseMs_ = durationMs < maxOnMs_ ? durationMs : maxOnMs_;
+  manualRequest_ = false;
+  on_ = true;
+  onSince_ = nowMs;
+}
+
+void PumpController::stop(uint32_t nowMs) {
+  (void)nowMs;
+  pulsing_ = false;
+  manualRequest_ = false;
+  on_ = false;
 }

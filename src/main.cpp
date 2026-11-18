@@ -33,24 +33,37 @@ void setup() {
   lastReadMs = millis() - READ_INTERVAL_MS;  // read immediately
 }
 
-void loop() {
-  uint32_t now = millis();
-  if (now - lastReadMs < READ_INTERVAL_MS) return;
-  lastReadMs = now;
-
-  lastReading = sensorsRead();
-  bool on = pump.update(now, lastReading.moisture);
-  setRelay(on);
-  if (on != prevPumpOn) {
-    delay(150);          // let the supply settle after the pump switches
-    displayRecover();    // the switching spike can garble the LCD
-    prevPumpOn = on;
-  }
-  uint32_t pauseMs = pump.pauseRemainingMs(now);
-  displayShow(lastReading, on, pauseMs);
-
+static void logState(bool on, uint32_t pauseMs) {
   Serial.printf("raw=%d moisture=%.1f%% temp=%.1fC(%s) pump=%s%s mode=%s\n",
                 lastReading.moistureRaw, lastReading.moisture, lastReading.tempC,
                 lastReading.tempValid ? "ok" : "--", on ? "ON" : "OFF", pauseMs ? " (jeda resap)" : "",
                 pump.mode() == PumpMode::Auto ? "auto" : "manual");
+}
+
+void loop() {
+  uint32_t now = millis();
+
+  // Sensors are read every READ_INTERVAL_MS.
+  bool readDue = now - lastReadMs >= READ_INTERVAL_MS;
+  if (readDue) {
+    lastReadMs = now;
+    lastReading = sensorsRead();
+  }
+
+  // The pump is checked every PUMP_TICK_MS, so a 3 s pulse from the web lasts 3 s.
+  bool on = pump.update(now, lastReading.moisture);
+  setRelay(on);
+  bool changed = on != prevPumpOn;
+  if (changed) {
+    delay(150);          // let the supply settle after the pump switches
+    displayRecover();    // the switching spike can garble the LCD
+    prevPumpOn = on;
+  }
+
+  if (readDue || changed) {
+    uint32_t pauseMs = pump.pauseRemainingMs(now);
+    displayShow(lastReading, on, pauseMs);
+    logState(on, pauseMs);
+  }
+  delay(PUMP_TICK_MS);
 }

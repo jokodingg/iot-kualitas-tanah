@@ -17,6 +17,11 @@ class PumpController {
   PumpMode mode() const;
   void manualSet(bool on);
   bool isOn() const;
+  // Run the pump for durationMs (capped at maxOnMs) in either mode, e.g. from a web button.
+  // Moisture and the Auto pause are ignored during the pulse; no pause follows it.
+  void pulse(uint32_t nowMs, uint32_t durationMs);
+  // Turn the pump off now and cancel any pulse or manual request.
+  void stop(uint32_t nowMs);
   // Milliseconds left in the Auto-mode pause after a watering pulse; 0 when not pausing.
   uint32_t pauseRemainingMs(uint32_t nowMs) const;
 
@@ -30,6 +35,8 @@ class PumpController {
   bool on_ = false;
   bool manualRequest_ = false;
   bool hasRun_ = false;
+  bool pulsing_ = false;
+  uint32_t pulseMs_ = 0;
   uint32_t onSince_ = 0;
   uint32_t offSince_ = 0;
 };

@@ -17,6 +17,8 @@ constexpr uint32_t MAX_ON_MS = 5000;    // one watering pulse
 constexpr uint32_t LOCKOUT_MS = 10000;  // pause between pulses, lets water soak in
 
 constexpr uint32_t READ_INTERVAL_MS = 2000;
+constexpr uint32_t PUMP_TICK_MS = 50;
+constexpr uint32_t WEB_PULSE_MS = 3000;  // "Siram 3 detik" button on the dashboard
 constexpr int ADC_SAMPLES = 10;
 
 // Keep the last good temperature for this many failed reads (e.g. -127 during a pump spike).

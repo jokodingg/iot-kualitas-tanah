@@ -34,6 +34,7 @@ button:disabled{background:#b9b5aa}
 <div class="card"><div class="label">Suhu tanah</div><div class="val" id="t">-</div></div>
 <div class="card" style="grid-column:1/3"><div class="label">Pompa</div><div class="val" id="p">-</div></div>
 </div>
+<div class="row"><button id="pulse">Siram 3 detik</button><button id="stop" style="background:#9a3b2e">Stop</button></div>
 <div class="row"><button id="mode">Mode: -</button></div>
 <div class="row"><button id="on">Pompa ON</button><button id="off">Pompa OFF</button></div>
 <script>
@@ -47,6 +48,7 @@ const man=d.mode=='manual';on.disabled=!man;off.disabled=!man;}
 function get(){fetch('/data').then(r=>r.json()).then(show).catch(()=>{});}
 function post(u){fetch(u,{method:'POST'}).then(r=>r.json()).then(show);}
 mode.onclick=()=>post('/mode?m='+(s.mode=='auto'?'manual':'auto'));
+pulse.onclick=()=>post('/siram');stop.onclick=()=>post('/stop');
 on.onclick=()=>post('/pump?on=1');off.onclick=()=>post('/pump?on=0');
 get();setInterval(get,2000);
 </script></body></html>)HTML";
@@ -94,6 +96,15 @@ void webBegin() {
     if (on != "1" && on != "0") return req->send(400, "text/plain", "on harus 1 atau 0");
     if (pump.mode() != PumpMode::Manual) return req->send(409, "text/plain", "ubah ke mode manual dulu");
     pump.manualSet(on == "1");
+    sendState(req);
+  });
+
+  server.on("/siram", HTTP_POST, [](AsyncWebServerRequest* req) {
+    pump.pulse(millis(), WEB_PULSE_MS);
+    sendState(req);
+  });
+  server.on("/stop", HTTP_POST, [](AsyncWebServerRequest* req) {
+    pump.stop(millis());
     sendState(req);
   });
 

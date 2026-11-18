@@ -101,6 +101,41 @@ void test_no_pause_in_manual() {
   TEST_ASSERT_EQUAL_UINT32(0, p.pauseRemainingMs(20000));
 }
 
+void test_pulse_runs_for_duration() {
+  auto p = make();
+  p.pulse(1000, 3000);
+  TEST_ASSERT_TRUE(p.update(1000, 80));
+  TEST_ASSERT_TRUE(p.update(3999, 80));   // wet soil does not stop a pulse early
+  TEST_ASSERT_FALSE(p.update(4000, 80));
+}
+void test_pulse_capped_at_max_on() {
+  auto p = make();
+  p.pulse(0, 60000);
+  TEST_ASSERT_TRUE(p.update(9999, 80));
+  TEST_ASSERT_FALSE(p.update(10000, 80));
+}
+void test_pulse_ignores_auto_lockout() {
+  auto p = make();
+  p.update(0, 30);
+  p.update(10000, 30);  // auto pulse done, lockout running
+  p.pulse(12000, 3000);
+  TEST_ASSERT_TRUE(p.update(12000, 30));
+}
+void test_pulse_then_auto_resumes_without_lockout() {
+  auto p = make();
+  p.pulse(0, 3000);
+  p.update(0, 80);
+  TEST_ASSERT_FALSE(p.update(3000, 80));
+  TEST_ASSERT_EQUAL_UINT32(0, p.pauseRemainingMs(3000));
+}
+void test_stop_ends_pulse() {
+  auto p = make();
+  p.pulse(0, 3000);
+  p.update(0, 80);
+  p.stop(1000);
+  TEST_ASSERT_FALSE(p.update(1000, 80));
+}
+
 int main() {
   UNITY_BEGIN();
   RUN_TEST(test_moisture_endpoints);
@@ -118,5 +153,10 @@ int main() {
   RUN_TEST(test_pause_remaining_after_pulse);
   RUN_TEST(test_no_pause_at_boot_or_while_on);
   RUN_TEST(test_no_pause_in_manual);
+  RUN_TEST(test_pulse_runs_for_duration);
+  RUN_TEST(test_pulse_capped_at_max_on);
+  RUN_TEST(test_pulse_ignores_auto_lockout);
+  RUN_TEST(test_pulse_then_auto_resumes_without_lockout);
+  RUN_TEST(test_stop_ends_pulse);
   return UNITY_END();
 }
