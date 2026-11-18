@@ -1,0 +1,56 @@
+<!doctype html>
+<html lang="id"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Kualitas Tanah</title>
+<style>
+body{font-family:system-ui,sans-serif;margin:0;padding:16px;background:#f4f1ea;color:#2b2a26}
+h1{font-size:1.3rem;margin:0 0 16px}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.card{background:#fff;border-radius:10px;padding:14px}
+.label{font-size:.8rem;color:#6b675e}
+.val{font-size:1.6rem;font-weight:600;margin-top:4px}
+.row{display:flex;gap:10px;margin-top:16px}
+button{flex:1;font-size:1rem;padding:14px;border:0;border-radius:10px;background:#3d6b35;color:#fff}
+button:disabled{background:#b9b5aa}
+#mode{background:#2b2a26}
+</style></head><body>
+<h1>Kualitas Tanah</h1>
+<div class="grid">
+<div class="card"><div class="label">Kelembapan</div><div class="val" id="m">-</div></div>
+<div class="card"><div class="label">Suhu tanah</div><div class="val" id="t">-</div></div>
+<div class="card" style="grid-column:1/3"><div class="label">Pompa</div><div class="val" id="p">-</div></div>
+</div>
+<div class="row"><button id="pulse">Siram 3 detik</button><button id="stop" style="background:#9a3b2e">Stop</button></div>
+<div class="row"><button id="mode">Mode: -</button></div>
+<div class="row"><button id="on">Pompa ON</button><button id="off">Pompa OFF</button></div>
+<script>
+// Preview only: replaces the ESP32 endpoints with sample data, so this page opens on a laptop.
+(function(){
+  let st={moisture:42,tempC:28.5,tempValid:true,pumpOn:false,pauseS:0,mode:"auto"};
+  let pulseEnd=0;
+  window.fetch=function(url,opt){
+    const u=new URL(url,location.href);
+    if(u.pathname.endsWith("/siram")){st.pumpOn=true;pulseEnd=Date.now()+3000;}
+    if(u.pathname.endsWith("/stop")){st.pumpOn=false;pulseEnd=0;}
+    if(u.pathname.endsWith("/mode")){st.mode=u.searchParams.get("m");}
+    if(u.pathname.endsWith("/pump")){st.pumpOn=u.searchParams.get("on")==="1";}
+    if(pulseEnd&&Date.now()>=pulseEnd){st.pumpOn=false;pulseEnd=0;}
+    return Promise.resolve({json:()=>Promise.resolve(Object.assign({},st))});
+  };
+})();
+</script>
+<script>
+let s={};
+function show(d){s=d;
+m.textContent=d.moisture.toFixed(0)+' %';
+t.textContent=d.tempValid?d.tempC.toFixed(1)+' °C':'--';
+p.textContent=d.pumpOn?'ON':(d.pauseS>0?'Jeda resap '+d.pauseS+' detik':'OFF');
+mode.textContent='Mode: '+(d.mode=='auto'?'AUTO':'MANUAL');
+const man=d.mode=='manual';on.disabled=!man;off.disabled=!man;}
+function get(){fetch('/data').then(r=>r.json()).then(show).catch(()=>{});}
+function post(u){fetch(u,{method:'POST'}).then(r=>r.json()).then(show);}
+mode.onclick=()=>post('/mode?m='+(s.mode=='auto'?'manual':'auto'));
+pulse.onclick=()=>post('/siram');stop.onclick=()=>post('/stop');
+on.onclick=()=>post('/pump?on=1');off.onclick=()=>post('/pump?on=0');
+get();setInterval(get,2000);
+</script></body></html>
