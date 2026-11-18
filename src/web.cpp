@@ -42,7 +42,7 @@ let s={};
 function show(d){s=d;
 m.textContent=d.moisture.toFixed(0)+' %';
 t.textContent=d.tempValid?d.tempC.toFixed(1)+' °C':'--';
-p.textContent=d.pumpOn?'ON':(d.pauseS>0?'Jeda resap '+d.pauseS+' detik (air meresap, bukan error)':'OFF');
+p.textContent=d.pumpOn?'ON':(d.pauseS>0?'Jeda resap '+d.pauseS+' detik':'OFF');
 mode.textContent='Mode: '+(d.mode=='auto'?'AUTO':'MANUAL');
 const man=d.mode=='manual';on.disabled=!man;off.disabled=!man;}
 function get(){fetch('/data').then(r=>r.json()).then(show).catch(()=>{});}
