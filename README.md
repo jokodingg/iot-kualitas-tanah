@@ -72,16 +72,12 @@ Ambang 35% dan 55% sengaja dibuat berjarak supaya pompa tidak bolak-balik menyal
 2. Jika HP memberi peringatan "tidak ada internet", pilih **tetap tersambung**. WiFi ini memang tidak terhubung ke internet.
 3. Buka browser lalu ketik **`192.168.4.1`**.
 
-```
-┌──────────────────────────────┐
-│ Kelembapan      Suhu tanah   │
-│   42 %           28.5 °C     │
-│ Pompa: OFF                   │
-│ [Siram 3 detik]   [Stop]     │
-│ [Mode: AUTO]                 │
-│ [Pompa ON]   [Pompa OFF]     │
-└──────────────────────────────┘
-```
+<table>
+  <tr>
+    <td align="center"><img src="docs/dashboard-auto.png" width="260" alt="Dashboard mode AUTO"><br>Mode AUTO</td>
+    <td align="center"><img src="docs/dashboard-manual.png" width="260" alt="Dashboard mode MANUAL"><br>Mode MANUAL</td>
+  </tr>
+</table>
 
 | Tombol | Fungsi |
 |---|---|
@@ -120,7 +116,7 @@ Data di dashboard diperbarui otomatis setiap 2 detik.
 
 ## 4. Skema pin
 
-Board dilihat dengan port USB di atas dan komponen menghadap Anda:
+Board dilihat dengan port USB di atas dan komponen menghadap Anda (pin menghadap ke atas):
 
 ```
                          ESP32-C3 Super Mini
