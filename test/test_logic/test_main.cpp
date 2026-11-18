@@ -15,12 +15,6 @@ void test_moisture_clamped() {
   TEST_ASSERT_EQUAL_FLOAT(0, moisturePercent(3500, 3000, 1300));
   TEST_ASSERT_EQUAL_FLOAT(100, moisturePercent(900, 3000, 1300));
 }
-void test_ec_zero_volts() { TEST_ASSERT_EQUAL_FLOAT(0, ecFromVoltage(0, 25)); }
-void test_ec_known_point() { TEST_ASSERT_FLOAT_WITHIN(1, 735.0, ecFromVoltage(1.0, 25)); }
-void test_ec_temp_compensation() { TEST_ASSERT_TRUE(ecFromVoltage(1.0, 35) < ecFromVoltage(1.0, 25)); }
-void test_ec_uses_25c_when_temp_invalid() {
-  TEST_ASSERT_EQUAL_FLOAT(ecFromVoltage(1.0, 25), ecFromVoltage(1.0, -127));
-}
 void test_pump_on_when_dry() {
   auto p = make();
   TEST_ASSERT_TRUE(p.update(0, 30));
@@ -89,10 +83,6 @@ int main() {
   UNITY_BEGIN();
   RUN_TEST(test_moisture_endpoints);
   RUN_TEST(test_moisture_clamped);
-  RUN_TEST(test_ec_zero_volts);
-  RUN_TEST(test_ec_known_point);
-  RUN_TEST(test_ec_temp_compensation);
-  RUN_TEST(test_ec_uses_25c_when_temp_invalid);
   RUN_TEST(test_pump_on_when_dry);
   RUN_TEST(test_pump_hysteresis);
   RUN_TEST(test_pump_stays_off_in_band);

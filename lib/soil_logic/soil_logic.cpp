@@ -8,14 +8,6 @@ float moisturePercent(int adc, int adcDry, int adcWet) {
   return pct;
 }
 
-float ecFromVoltage(float volts, float tempC) {
-  float t = (tempC < -20.0f || tempC > 80.0f) ? 25.0f : tempC;
-  float comp = 1.0f + 0.02f * (t - 25.0f);
-  float v = volts / comp;
-  float tds = (133.42f * v * v * v - 255.86f * v * v + 857.39f * v) * 0.5f;  // ppm
-  return tds * 2.0f;
-}
-
 PumpController::PumpController(float onBelow, float offAbove, uint32_t maxOnMs, uint32_t lockoutMs)
     : onBelow_(onBelow), offAbove_(offAbove), maxOnMs_(maxOnMs), lockoutMs_(lockoutMs) {}
 

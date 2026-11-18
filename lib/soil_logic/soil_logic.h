@@ -4,9 +4,6 @@
 // Linear map from raw ADC to 0-100 %. A dry probe gives a higher ADC value.
 float moisturePercent(int adc, int adcDry, int adcWet);
 
-// DFRobot TDS formula with temperature compensation. Returns EC in uS/cm.
-// A temperature outside -20..80 C (e.g. a disconnected DS18B20) falls back to 25 C.
-float ecFromVoltage(float volts, float tempC);
 
 enum class PumpMode { Auto, Manual };
 

@@ -32,8 +32,7 @@ button:disabled{background:#b9b5aa}
 <div class="grid">
 <div class="card"><div class="label">Kelembapan</div><div class="val" id="m">-</div></div>
 <div class="card"><div class="label">Suhu tanah</div><div class="val" id="t">-</div></div>
-<div class="card"><div class="label">EC (relatif)</div><div class="val" id="ec">-</div></div>
-<div class="card"><div class="label">Pompa</div><div class="val" id="p">-</div></div>
+<div class="card" style="grid-column:1/3"><div class="label">Pompa</div><div class="val" id="p">-</div></div>
 </div>
 <div class="row"><button id="mode">Mode: -</button></div>
 <div class="row"><button id="on">Pompa ON</button><button id="off">Pompa OFF</button></div>
@@ -42,7 +41,6 @@ let s={};
 function show(d){s=d;
 m.textContent=d.moisture.toFixed(0)+' %';
 t.textContent=d.tempValid?d.tempC.toFixed(1)+' °C':'--';
-ec.textContent=d.ecUs<0?'--':d.ecUs.toFixed(0)+' µS/cm';
 p.textContent=d.pumpOn?'ON':'OFF';
 mode.textContent='Mode: '+(d.mode=='auto'?'AUTO':'MANUAL');
 const man=d.mode=='manual';on.disabled=!man;off.disabled=!man;}
@@ -56,9 +54,9 @@ get();setInterval(get,2000);
 static String stateJson() {
   char buf[200];
   snprintf(buf, sizeof(buf),
-           "{\"moisture\":%.1f,\"tempC\":%.1f,\"tempValid\":%s,\"ecUs\":%.0f,\"pumpOn\":%s,\"mode\":\"%s\"}",
+           "{\"moisture\":%.1f,\"tempC\":%.1f,\"tempValid\":%s,\"pumpOn\":%s,\"mode\":\"%s\"}",
            lastReading.moisture, lastReading.tempC, lastReading.tempValid ? "true" : "false",
-           lastReading.ecUs, pump.isOn() ? "true" : "false",
+           pump.isOn() ? "true" : "false",
            pump.mode() == PumpMode::Auto ? "auto" : "manual");
   return String(buf);
 }

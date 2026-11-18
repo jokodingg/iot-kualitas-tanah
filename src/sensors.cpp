@@ -18,12 +18,6 @@ static int averageRaw(int pin) {
   return sum / ADC_SAMPLES;
 }
 
-static float averageVolts(int pin) {
-  long sum = 0;
-  for (int i = 0; i < ADC_SAMPLES; i++) sum += analogReadMilliVolts(pin);
-  return (sum / (float)ADC_SAMPLES) / 1000.0f;
-}
-
 void sensorsBegin() {
   analogReadResolution(12);
   analogSetAttenuation(ADC_11db);
@@ -46,11 +40,8 @@ Reading sensorsRead() {
   // A single failed read (often a pump spike) keeps the last good value.
   r.tempValid = badTempReads < TEMP_HOLD_READS;
   r.tempC = r.tempValid ? lastGoodTemp : t;
-  t = r.tempC;
 
   r.moistureRaw = averageRaw(PIN_MOISTURE);
   r.moisture = moisturePercent(r.moistureRaw, ADC_DRY, ADC_WET);
-  // A floating, unwired GPIO1 reads random voltage, so report -1 (no EC) instead.
-  r.ecUs = HAS_TDS ? ecFromVoltage(averageVolts(PIN_TDS), r.tempValid ? t : 25.0f) : -1.0f;
   return r;
 }

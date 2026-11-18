@@ -7,7 +7,7 @@
 #include "web.h"
 
 PumpController pump(ON_BELOW, OFF_ABOVE, MAX_ON_MS, LOCKOUT_MS);
-Reading lastReading = {0, 0, false, 0, 0};
+Reading lastReading = {0, 0, false, 0};
 
 static uint32_t lastReadMs = 0;
 static bool prevPumpOn = false;
@@ -47,11 +47,8 @@ void loop() {
   }
   displayShow(lastReading, on);
 
-  char ecText[16];
-  if (lastReading.ecUs < 0) snprintf(ecText, sizeof(ecText), "--");
-  else snprintf(ecText, sizeof(ecText), "%.0fuS", lastReading.ecUs);
-  Serial.printf("raw=%d moisture=%.1f%% temp=%.1fC(%s) ec=%s pump=%s mode=%s\n",
+  Serial.printf("raw=%d moisture=%.1f%% temp=%.1fC(%s) pump=%s mode=%s\n",
                 lastReading.moistureRaw, lastReading.moisture, lastReading.tempC,
-                lastReading.tempValid ? "ok" : "--", ecText, on ? "ON" : "OFF",
+                lastReading.tempValid ? "ok" : "--", on ? "ON" : "OFF",
                 pump.mode() == PumpMode::Auto ? "auto" : "manual");
 }

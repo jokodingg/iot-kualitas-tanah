@@ -32,7 +32,6 @@ void displayShow(const Reading& r, bool pumpOn) {
   if (r.tempValid) snprintf(line, sizeof(line), "M:%d%% T:%.1fC", (int)(r.moisture + 0.5f), r.tempC);
   else snprintf(line, sizeof(line), "M:%d%% T:--", (int)(r.moisture + 0.5f));
   printLine(0, line);
-  if (r.ecUs < 0) snprintf(line, sizeof(line), "EC:-- P:%s", pumpOn ? "ON" : "OFF");
-  else snprintf(line, sizeof(line), "EC:%dus P:%s", (int)(r.ecUs + 0.5f), pumpOn ? "ON" : "OFF");
+  snprintf(line, sizeof(line), "Pompa: %s", pumpOn ? "ON" : "OFF");
   printLine(1, line);
 }

@@ -12,7 +12,6 @@ pio run -t upload && pio device monitor
 | Urutan | Folder | Komponen | Hasil yang benar |
 |---|---|---|---|
 | 1 | `soil-moisture` | Sensor kelembapan (GPIO0) | Nilai `raw` di udara tinggi, di air rendah. Catat keduanya ke `ADC_DRY`/`ADC_WET` di `include/config.h`. |
-| 2 | `tds` | Modul TDS (GPIO1) | Probe di udara mendekati 0 V. Probe di air keran sekitar 100–600 uS/cm. |
 | 3 | `ds18b20` | Sensor suhu (GPIO3) | "sensor ditemukan: 1". Suhu masuk akal dan naik saat probe digenggam. |
 | 4 | `lcd` | LCD I2C (GPIO8/9) | Alamat ditemukan, layar menampilkan "Tes LCD OK" dan angka hitungan. |
 | 5 | `relay` | Relay tanpa pompa (GPIO4) | Relay berbunyi klik setiap 2 detik, sesuai teks ON/OFF di Serial. |

@@ -3,14 +3,10 @@
 
 // Pins (ESP32-C3 Super Mini)
 constexpr int PIN_MOISTURE = 0;  // ADC
-constexpr int PIN_TDS = 1;       // ADC
 constexpr int PIN_DS18B20 = 3;
 constexpr int PIN_RELAY = 4;
 constexpr int PIN_SDA = 8;
 constexpr int PIN_SCL = 9;
-
-// Set to true once the TDS/EC module is wired to PIN_TDS. While false, EC shows as "--".
-constexpr bool HAS_TDS = false;
 
 constexpr uint8_t LCD_ADDR = 0x27;  // try 0x3F if the screen stays blank
 
