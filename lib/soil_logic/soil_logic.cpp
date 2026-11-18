@@ -55,3 +55,9 @@ PumpMode PumpController::mode() const { return mode_; }
 void PumpController::manualSet(bool on) { manualRequest_ = on; }
 
 bool PumpController::isOn() const { return on_; }
+
+uint32_t PumpController::pauseRemainingMs(uint32_t nowMs) const {
+  if (mode_ != PumpMode::Auto || on_ || !hasRun_) return 0;
+  uint32_t elapsed = nowMs - offSince_;
+  return elapsed < lockoutMs_ ? lockoutMs_ - elapsed : 0;
+}

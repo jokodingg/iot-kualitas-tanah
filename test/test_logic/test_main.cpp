@@ -79,6 +79,28 @@ void test_mode_switch_reevaluates() {
   TEST_ASSERT_FALSE(p.update(2000, 80));
 }
 
+void test_pause_remaining_after_pulse() {
+  auto p = make();
+  p.update(0, 30);
+  p.update(10000, 30);  // max on reached, pump turns off
+  TEST_ASSERT_EQUAL_UINT32(60000, p.pauseRemainingMs(10000));
+  TEST_ASSERT_EQUAL_UINT32(30000, p.pauseRemainingMs(40000));
+  TEST_ASSERT_EQUAL_UINT32(0, p.pauseRemainingMs(70000));
+}
+void test_no_pause_at_boot_or_while_on() {
+  auto p = make();
+  TEST_ASSERT_EQUAL_UINT32(0, p.pauseRemainingMs(0));
+  p.update(0, 30);
+  TEST_ASSERT_EQUAL_UINT32(0, p.pauseRemainingMs(1000));
+}
+void test_no_pause_in_manual() {
+  auto p = make();
+  p.update(0, 30);
+  p.update(10000, 30);
+  p.setMode(PumpMode::Manual);
+  TEST_ASSERT_EQUAL_UINT32(0, p.pauseRemainingMs(20000));
+}
+
 int main() {
   UNITY_BEGIN();
   RUN_TEST(test_moisture_endpoints);
@@ -93,5 +115,8 @@ int main() {
   RUN_TEST(test_manual_off_immediate);
   RUN_TEST(test_manual_ignores_moisture);
   RUN_TEST(test_mode_switch_reevaluates);
+  RUN_TEST(test_pause_remaining_after_pulse);
+  RUN_TEST(test_no_pause_at_boot_or_while_on);
+  RUN_TEST(test_no_pause_in_manual);
   return UNITY_END();
 }

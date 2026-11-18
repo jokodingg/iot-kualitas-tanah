@@ -45,10 +45,11 @@ void loop() {
     displayRecover();    // the switching spike can garble the LCD
     prevPumpOn = on;
   }
-  displayShow(lastReading, on);
+  uint32_t pauseMs = pump.pauseRemainingMs(now);
+  displayShow(lastReading, on, pauseMs);
 
-  Serial.printf("raw=%d moisture=%.1f%% temp=%.1fC(%s) pump=%s mode=%s\n",
+  Serial.printf("raw=%d moisture=%.1f%% temp=%.1fC(%s) pump=%s%s mode=%s\n",
                 lastReading.moistureRaw, lastReading.moisture, lastReading.tempC,
-                lastReading.tempValid ? "ok" : "--", on ? "ON" : "OFF",
+                lastReading.tempValid ? "ok" : "--", on ? "ON" : "OFF", pauseMs ? " (jeda resap)" : "",
                 pump.mode() == PumpMode::Auto ? "auto" : "manual");
 }

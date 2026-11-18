@@ -27,11 +27,13 @@ void displayRecover() {
   lcd.backlight();
 }
 
-void displayShow(const Reading& r, bool pumpOn) {
+void displayShow(const Reading& r, bool pumpOn, uint32_t pauseMs) {
   char line[24];
   if (r.tempValid) snprintf(line, sizeof(line), "M:%d%% T:%.1fC", (int)(r.moisture + 0.5f), r.tempC);
   else snprintf(line, sizeof(line), "M:%d%% T:--", (int)(r.moisture + 0.5f));
   printLine(0, line);
-  snprintf(line, sizeof(line), "Pompa: %s", pumpOn ? "ON" : "OFF");
+  if (pumpOn) snprintf(line, sizeof(line), "Pompa: ON");
+  else if (pauseMs > 0) snprintf(line, sizeof(line), "Jeda resap %lus", (unsigned long)((pauseMs + 999) / 1000));
+  else snprintf(line, sizeof(line), "Pompa: OFF");
   printLine(1, line);
 }

@@ -41,7 +41,7 @@ let s={};
 function show(d){s=d;
 m.textContent=d.moisture.toFixed(0)+' %';
 t.textContent=d.tempValid?d.tempC.toFixed(1)+' °C':'--';
-p.textContent=d.pumpOn?'ON':'OFF';
+p.textContent=d.pumpOn?'ON':(d.pauseS>0?'Jeda resap '+d.pauseS+' detik (air meresap, bukan error)':'OFF');
 mode.textContent='Mode: '+(d.mode=='auto'?'AUTO':'MANUAL');
 const man=d.mode=='manual';on.disabled=!man;off.disabled=!man;}
 function get(){fetch('/data').then(r=>r.json()).then(show).catch(()=>{});}
@@ -52,11 +52,12 @@ get();setInterval(get,2000);
 </script></body></html>)HTML";
 
 static String stateJson() {
-  char buf[200];
+  char buf[240];
   snprintf(buf, sizeof(buf),
-           "{\"moisture\":%.1f,\"tempC\":%.1f,\"tempValid\":%s,\"pumpOn\":%s,\"mode\":\"%s\"}",
+           "{\"moisture\":%.1f,\"tempC\":%.1f,\"tempValid\":%s,\"pumpOn\":%s,\"pauseS\":%lu,\"mode\":\"%s\"}",
            lastReading.moisture, lastReading.tempC, lastReading.tempValid ? "true" : "false",
            pump.isOn() ? "true" : "false",
+           (unsigned long)((pump.pauseRemainingMs(millis()) + 999) / 1000),
            pump.mode() == PumpMode::Auto ? "auto" : "manual");
   return String(buf);
 }

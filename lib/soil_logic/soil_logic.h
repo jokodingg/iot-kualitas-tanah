@@ -17,6 +17,8 @@ class PumpController {
   PumpMode mode() const;
   void manualSet(bool on);
   bool isOn() const;
+  // Milliseconds left in the Auto-mode pause after a watering pulse; 0 when not pausing.
+  uint32_t pauseRemainingMs(uint32_t nowMs) const;
 
  private:
   void turnOn(uint32_t nowMs);
